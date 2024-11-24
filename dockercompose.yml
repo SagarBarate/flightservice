@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql-docker
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: reservation
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Sagar@123
+    ports:
+      - "3306:3306"
+    networks:
+      - my_service_network
+    volumes:
+      - mysql_data:/var/lib/mysql  
+
+  springboot-app:
+ #   build: .
+    image : sagarbarate/flightservicerepo:v1
+    container_name: flightservice-container
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: mysql-docker
+      DB_PORT: 3306
+      DB_NAME: reservation
+      DB_USER: root
+      DB_PASSWORD: Sagar@123
+    depends_on:
+      - mysql
+    networks:
+      - my_service_network
+
+networks:
+  my_service_network:
+     external: true
+
+volumes:
+  mysql_data:
